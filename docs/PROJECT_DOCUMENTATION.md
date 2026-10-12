@@ -293,7 +293,19 @@ Automated suites live in `tests/`; both ran green against PostgreSQL 17 + pgvect
 
 **Manual UI checks**: sign-in, Discover search table, track page with "feels like" list, Admin → Analytics with live SQL.
 
-> Screenshots to include in the submitted copy: Discover (search), Mood explorer, Track detail, Playlist view, Profile, Admin → Overview, Admin → Analytics, Admin → Users.
+### Application screenshots
+
+| | |
+|---|---|
+| Login | ![login](screenshots/01-login.png) |
+| Discover — full-text search | ![search](screenshots/02-discover-search.png) |
+| Mood explorer — pgvector nearest neighbours | ![mood](screenshots/03-mood-explorer.png) |
+| Track detail — "feels like this" | ![track](screenshots/04-track-detail.png) |
+| Playlist view | ![playlist](screenshots/05-playlist.png) |
+| Profile — stats and recommendations | ![profile](screenshots/06-profile.png) |
+| Admin — overview | ![admin](screenshots/07-admin-overview.png) |
+| Admin — analytics (live SQL) | ![analytics](screenshots/08-admin-analytics.png) |
+| Admin — users and roles | ![users](screenshots/09-admin-users.png) |
 
 ## 12. Conclusion
 
