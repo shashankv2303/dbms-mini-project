@@ -267,7 +267,7 @@ SELECT * FROM (
 
 ## 11. Testing results
 
-Automated suites live in `tests/`; both ran green against PostgreSQL + pgvector.
+Automated suites live in `tests/`; both ran green against PostgreSQL 17 + pgvector 0.8 (Docker image `pgvector/pgvector:pg17`).
 
 **Database tests (`tests/db.test.mjs`) — 15 / 15 passed**
 

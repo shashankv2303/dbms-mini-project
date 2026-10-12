@@ -33,6 +33,14 @@ Full write-up (ER diagram, data dictionary, queries, testing): [`docs/PROJECT_DO
 createdb soundtrail
 ```
 
+No local Postgres? Use Docker instead:
+
+```bash
+docker run -d --name soundtrail-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=soundtrail \
+  -p 5432:5432 pgvector/pgvector:pg17
+# DATABASE_URL=postgresql://postgres:postgres@localhost:5432/soundtrail
+```
+
 ## Setup
 
 ```bash
