@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api, fmtDate, fmtDuration } from '@/lib/client';
+import { api, fmtDate, fmtListenTime } from '@/lib/client';
 import TrackTable, { TrackRow } from '@/components/TrackTable';
 import { Stars } from '@/components/Stars';
 import { useToast } from '@/components/Toast';
@@ -44,7 +44,7 @@ export default function ProfilePage() {
       <div className="grid cols-4">
         {[
           ['Listens', stats.total_listens], ['Distinct tracks', stats.distinct_tracks],
-          ['Time listened', fmtDuration(stats.seconds_listened)], ['Playlists', stats.playlist_count],
+          ['Time listened', fmtListenTime(stats.seconds_listened)], ['Playlists', stats.playlist_count],
           ['Ratings', stats.rating_count],
         ].map(([label, val]) => (
           <div className="card" key={String(label)}><div className="stat">{val}</div><div className="muted small">{label}</div></div>
