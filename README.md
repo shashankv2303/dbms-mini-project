@@ -21,34 +21,112 @@ Full write-up (ER diagram, data dictionary, queries, testing): [`docs/PROJECT_DO
 | Auth | bcrypt password hashes, JWT (HS256, `jose`) in an httpOnly cookie, role checks in middleware **and** handlers |
 | DB access | raw `pg` queries (no ORM) |
 
-## Prerequisites
+## Running the project (macOS and Windows)
 
-* Node.js 20+
-* PostgreSQL 14+ with the **pgvector** extension available
-  (`brew install postgresql@17 pgvector` on macOS, or the `pgvector/pgvector` Docker image)
-* A database named `soundtrail` and a role that may `CREATE EXTENSION`
-  (the `vector` and `pgcrypto` extensions are both created by `01_schema.sql`)
+The steps are the same on both systems except where marked. The easiest route is
+**Docker for the database**, because it works identically everywhere and needs no
+Postgres/pgvector install.
 
-```bash
-createdb soundtrail
+### 1. Install the prerequisites
+
+| Tool | macOS | Windows 10/11 |
+|---|---|---|
+| Node.js 20+ | [nodejs.org](https://nodejs.org) installer, or `brew install node` | [nodejs.org](https://nodejs.org) installer (LTS) |
+| Docker Desktop | [docker.com](https://www.docker.com/products/docker-desktop) (Intel or Apple Silicon build) | same; keep the default **WSL 2** backend and restart if asked |
+| Git | `xcode-select --install` or `brew install git` | [git-scm.com](https://git-scm.com/download/win) |
+
+Check them (Terminal on macOS, **PowerShell** on Windows):
+
+```
+node -v        # v20 or newer
+docker -v
+git --version
 ```
 
-No local Postgres? Use Docker instead:
+Open Docker Desktop and wait until it says it is running.
 
-```bash
-docker run -d --name soundtrail-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=soundtrail \
-  -p 5432:5432 pgvector/pgvector:pg17
-# DATABASE_URL=postgresql://postgres:postgres@localhost:5432/soundtrail
+### 2. Get the code
+
 ```
-
-## Setup
-
-```bash
+git clone https://github.com/shashankv2303/dbms-mini-project.git
+cd dbms-mini-project
 npm install
-cp .env.example .env.local        # then edit DATABASE_URL and JWT_SECRET
-npm run db:setup                   # runs sql/01 → 04 (use db:reset to start over)
-npm run dev                        # http://localhost:3000
 ```
+
+### 3. Start PostgreSQL + pgvector
+
+One line, works in macOS Terminal **and** Windows PowerShell:
+
+```
+docker run -d --name soundtrail-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=soundtrail -p 5432:5432 -v soundtrail-pgdata:/var/lib/postgresql/data pgvector/pgvector:pg17
+```
+
+Later, after a reboot: `docker start soundtrail-pg`. If port 5432 is already used by
+another Postgres, change `-p 5432:5432` to `-p 5433:5432` and use `5433` in `DATABASE_URL`.
+
+### 4. Configure environment variables
+
+Create `.env.local` from the template:
+
+| | macOS / Linux | Windows PowerShell |
+|---|---|---|
+| copy | `cp .env.example .env.local` | `Copy-Item .env.example .env.local` |
+
+Then open `.env.local` in any editor. `DATABASE_URL` already matches the Docker
+command above. Replace `JWT_SECRET` with a long random string. Generate one with
+(works on both systems, uses Node):
+
+```
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+### 5. Create the schema and load the data
+
+```
+npm run db:setup
+```
+
+(`npm run db:reset` wipes the schema first, useful to start over.)
+
+### 6. Start the app
+
+```
+npm run dev
+```
+
+Open <http://localhost:3000> and sign in with a demo account (below).
+For a production-style run: `npm run build` then `npm start`.
+
+### Using your own PostgreSQL instead of Docker
+
+Install PostgreSQL 14+ **and the pgvector extension**
+(macOS: `brew install postgresql@17 pgvector`; Windows: the EDB installer plus a
+[pgvector Windows build](https://github.com/pgvector/pgvector#windows), or simply use Docker).
+Create the database (`createdb soundtrail`, or `CREATE DATABASE soundtrail;` in pgAdmin),
+put its URL in `DATABASE_URL`, then continue from step 5. The connecting role must be
+allowed to `CREATE EXTENSION` (`vector` and `pgcrypto` are created by `01_schema.sql`).
+
+### Open a SQL shell (for the viva / demo queries)
+
+```
+docker exec -it soundtrail-pg psql -U postgres -d soundtrail
+```
+
+Inside it, paste queries from `sql/05_queries.sql`, or use `\dt` (tables), `\di` (indexes),
+`\dv` (views), `\df` (functions).
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `docker: command not found` / cannot connect to daemon | Start Docker Desktop and wait for it to finish starting |
+| `ECONNREFUSED 127.0.0.1:5432` | Container not running: `docker start soundtrail-pg` (check with `docker ps`) |
+| `password authentication failed` | `DATABASE_URL` must match the `POSTGRES_PASSWORD` you used (`postgres` above) |
+| `extension "vector" is not available` | You are on a Postgres without pgvector. Use the Docker image above |
+| `JWT_SECRET must be set` | `.env.local` is missing or `JWT_SECRET` is under 16 characters; restart `npm run dev` after editing |
+| `Port 3000 is in use` | `npm run dev -- -p 3001` |
+| PowerShell blocks `npm` ("running scripts is disabled") | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, or use Command Prompt |
+| Reset everything | `docker rm -f soundtrail-pg && docker volume rm soundtrail-pgdata`, then redo step 3 and 5 |
 
 `npm run db:setup` applies, in order:
 
