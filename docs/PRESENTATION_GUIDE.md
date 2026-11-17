@@ -6,13 +6,15 @@ DB integration → advanced features → test cases → individual contribution.
 
 ## 0. Before you start (do this 15 minutes early)
 
-```bash
-# 1. Start Docker Desktop, wait until it says "running", then:
-docker start soundtrail-pg
+Start Docker Desktop and wait until it says "running". Then, in a terminal:
 
-# 2. In the project folder:
-npm run dev            # http://localhost:3000
+```bash
+cd "/Users/vinayak.hm/Desktop/labs/dbms/mini project"
+docker start soundtrail-pg
+npm run dev
 ```
+
+The app is then at http://localhost:3000. (Don't paste `# comments` into zsh — it treats them as arguments.)
 
 Open these **before** presenting so nothing loads cold:
 
