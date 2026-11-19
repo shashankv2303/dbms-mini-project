@@ -6,6 +6,7 @@ import { useAuth } from '@/components/AuthProvider';
 import TrackTable, { TrackRow } from '@/components/TrackTable';
 import { Stars, StarInput } from '@/components/Stars';
 import AddToPlaylist from '@/components/AddToPlaylist';
+import AlbumCover from '@/components/AlbumCover';
 import { useToast } from '@/components/Toast';
 
 export default function TrackPage({ params }: { params: Promise<{ id: string }> }) {
@@ -67,15 +68,20 @@ export default function TrackPage({ params }: { params: Promise<{ id: string }> 
   return (
     <div className="stack">
       <div className="card">
-        <h1>{track.title}</h1>
-        <p>
-          <Link href={`/artist/${track.artist_id}`}>{track.artist}</Link>
-          <span className="muted"> · {track.album} · {track.genre ?? 'No genre'} · {fmtDuration(track.duration_sec)} · {fmtDate(track.release_date)}</span>
-        </p>
-        <div className="row">
-          <Stars value={track.avg_rating} /><span className="muted small">({track.rating_count} ratings)</span>
-          <span className="pill">{track.play_count} plays</span>
-          {track.embedding_model && <span className="pill">embedding: {track.embedding_model}</span>}
+        <div className="row" style={{ alignItems: 'flex-start', gap: '1.1rem', flexWrap: 'nowrap' }}>
+          <AlbumCover albumId={track.album_id} title={track.album} size={112} />
+          <div style={{ minWidth: 0 }}>
+            <h1>{track.title}</h1>
+            <p>
+              <Link href={`/artist/${track.artist_id}`}>{track.artist}</Link>
+              <span className="muted"> · {track.album} · {track.genre ?? 'No genre'} · {fmtDuration(track.duration_sec)} · {fmtDate(track.release_date)}</span>
+            </p>
+            <div className="row">
+              <Stars value={track.avg_rating} /><span className="muted small">({track.rating_count} ratings)</span>
+              <span className="pill">{track.play_count} plays</span>
+              {track.embedding_model && <span className="pill">embedding: {track.embedding_model}</span>}
+            </div>
+          </div>
         </div>
         <div className="row" style={{ marginTop: '.9rem' }}>
           {me ? (
