@@ -2,6 +2,8 @@
 
 DBMS Experiential Learning, Level 3 project · Team 15 · PES University
 
+**Team:** Shashank Vinayak (PES1UG24CS435) · B Varun (PES1UG24CS109)
+
 SoundTrail lets listeners discover music by *mood*. Track metadata lives in
 **PostgreSQL** (9 relational tables); every track also has a 128-dimensional
 mood/audio embedding stored with **pgvector**, so the app can answer

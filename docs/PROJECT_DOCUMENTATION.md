@@ -2,6 +2,7 @@
 
 **Mood-Based Music Discovery & Playlist Curation Platform**
 DBMS Experiential Learning · Level 3 · Team 15 · PES University
+**Team:** Shashank Vinayak (PES1UG24CS435) · B Varun (PES1UG24CS109)
 
 ---
 
