@@ -125,6 +125,10 @@ erDiagram
     }
 ```
 
+If your Markdown viewer does not render the diagram above, here is the same diagram as an image:
+
+![ER diagram](er-diagram.png)
+
 Relationships: ARTIST 1—N ALBUM, ALBUM 1—N TRACK, GENRE 1—N ALBUM/TRACK, APP_USER 1—N PLAYLIST, PLAYLIST M—N TRACK (resolved by PLAYLIST_TRACK), APP_USER M—N TRACK via RATING (one per pair) and via LISTEN_HISTORY (many per pair), TRACK 1—1 TRACK_EMBEDDING.
 
 ## 5. Relational schema
