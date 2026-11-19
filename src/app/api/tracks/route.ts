@@ -9,6 +9,7 @@ const SORTS: Record<string, string> = {
   rating: 'r.avg_rating DESC NULLS LAST, r.rating_count DESC, t.track_id',
   newest: 'al.release_date DESC NULLS LAST, t.track_id',
   title: 't.title, t.track_id',
+  recent: 't.track_id DESC',
 };
 
 export const GET = route(async (req) => {

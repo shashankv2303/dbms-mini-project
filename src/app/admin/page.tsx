@@ -216,7 +216,7 @@ function Tracks({ notify }: { notify: Notify }) {
   const [mood, setMood] = useState<number[]>([0, 0, 0, 0, 0, 0, 0, 0]);
 
   const reload = useCallback(() => {
-    api(`/api/tracks?limit=40&sort=newest${q ? `&q=${encodeURIComponent(q)}` : ''}`).then((r) => setItems(r.tracks)).catch(() => {});
+    api(`/api/tracks?limit=40&sort=recent${q ? `&q=${encodeURIComponent(q)}` : ''}`).then((r) => setItems(r.tracks)).catch(() => {});
   }, [q]);
   useEffect(() => { reload(); }, [reload]);
 
@@ -225,9 +225,13 @@ function Tracks({ notify }: { notify: Notify }) {
     const json = { title: f.title, duration_sec: Number(f.duration_sec), track_number: f.track_number ? Number(f.track_number) : null,
       album_id: Number(f.album_id), genre_id: f.genre_id ? Number(f.genre_id) : null };
     try {
+      let msg = 'Track updated';
       if (editId) await api(`/api/tracks/${editId}`, { method: 'PUT', json });
-      else await api('/api/tracks', { method: 'POST', json });
-      setF(empty); setEditId(null); reload(); notify(editId ? 'Track updated' : 'Track added (genre-centroid embedding assigned by trigger)');
+      else {
+        const r = await api('/api/tracks', { method: 'POST', json });
+        msg = `Track #${r.track.track_id} added (genre-centroid embedding assigned by trigger)`;
+      }
+      setF(empty); setEditId(null); setQ(''); reload(); notify(msg);
     } catch (err: any) { notify(err.message, true); }
   }
   async function del(id: number) {
