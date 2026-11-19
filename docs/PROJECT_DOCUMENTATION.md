@@ -41,68 +41,88 @@ Roles: `listener` (default for new accounts), `artist` (reserved, same rights as
 ```mermaid
 erDiagram
     ARTIST ||--o{ ALBUM : releases
-    GENRE  ||--o{ ALBUM : classifies
-    GENRE  ||--o{ TRACK : classifies
-    ALBUM  ||--o{ TRACK : contains
-    TRACK  ||--|| TRACK_EMBEDDING : "has vector"
+    GENRE ||--o{ ALBUM : classifies
+    GENRE ||--o{ TRACK : classifies
+    ALBUM ||--o{ TRACK : contains
+    TRACK ||--|| TRACK_EMBEDDING : has_vector
     APP_USER ||--o{ PLAYLIST : owns
     PLAYLIST ||--o{ PLAYLIST_TRACK : holds
-    TRACK  ||--o{ PLAYLIST_TRACK : "appears in"
+    TRACK ||--o{ PLAYLIST_TRACK : appears_in
     APP_USER ||--o{ RATING : writes
-    TRACK  ||--o{ RATING : receives
+    TRACK ||--o{ RATING : receives
     APP_USER ||--o{ LISTEN_HISTORY : generates
-    TRACK  ||--o{ LISTEN_HISTORY : "is played in"
+    TRACK ||--o{ LISTEN_HISTORY : played_in
 
-    ARTIST { int artist_id PK
-            varchar name
-            text bio
-            varchar country
-            int formed_year }
-    GENRE { int genre_id PK
-            varchar name UK }
-    ALBUM { int album_id PK
-            varchar title
-            date release_date
-            int artist_id FK
-            int genre_id FK }
-    TRACK { int track_id PK
-            varchar title
-            int duration_sec
-            int track_number
-            int play_count
-            int album_id FK
-            int genre_id FK }
-    APP_USER { int user_id PK
-            varchar username UK
-            varchar email UK
-            varchar password_hash
-            varchar role
-            timestamp created_at }
-    PLAYLIST { int playlist_id PK
-            varchar name
-            text description
-            bool is_public
-            timestamp created_at
-            int user_id FK }
-    PLAYLIST_TRACK { int playlist_id PK_FK
-            int track_id PK_FK
-            int position
-            timestamp added_at }
-    RATING { int rating_id PK
-            int rating
-            text review_text
-            timestamp created_at
-            int user_id FK
-            int track_id FK }
-    LISTEN_HISTORY { int history_id PK
-            timestamp listened_at
-            int duration_listened
-            int user_id FK
-            int track_id FK }
-    TRACK_EMBEDDING { int track_id PK_FK
-            vector128 embedding
-            varchar model_version
-            timestamp created_at }
+    ARTIST {
+        int artist_id PK
+        varchar name
+        text bio
+        varchar country
+        int formed_year
+    }
+    GENRE {
+        int genre_id PK
+        varchar name UK
+    }
+    ALBUM {
+        int album_id PK
+        varchar title
+        date release_date
+        int artist_id FK
+        int genre_id FK
+    }
+    TRACK {
+        int track_id PK
+        varchar title
+        int duration_sec
+        int track_number
+        int play_count
+        int album_id FK
+        int genre_id FK
+    }
+    APP_USER {
+        int user_id PK
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        varchar role
+        timestamp created_at
+    }
+    PLAYLIST {
+        int playlist_id PK
+        varchar name
+        text description
+        boolean is_public
+        timestamp created_at
+        int user_id FK
+    }
+    PLAYLIST_TRACK {
+        int playlist_id PK, FK
+        int track_id PK, FK
+        int position
+        timestamp added_at
+    }
+    RATING {
+        int rating_id PK
+        int rating
+        text review_text
+        timestamp created_at
+        int user_id FK
+        int track_id FK
+    }
+    LISTEN_HISTORY {
+        int history_id PK
+        timestamp listened_at
+        int duration_listened
+        int user_id FK
+        int track_id FK
+    }
+    TRACK_EMBEDDING {
+        int track_id PK, FK
+        vector embedding
+        varchar model_version
+        timestamp created_at
+    }
 ```
 
 Relationships: ARTIST 1—N ALBUM, ALBUM 1—N TRACK, GENRE 1—N ALBUM/TRACK, APP_USER 1—N PLAYLIST, PLAYLIST M—N TRACK (resolved by PLAYLIST_TRACK), APP_USER M—N TRACK via RATING (one per pair) and via LISTEN_HISTORY (many per pair), TRACK 1—1 TRACK_EMBEDDING.
